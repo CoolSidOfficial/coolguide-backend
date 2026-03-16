@@ -1,9 +1,20 @@
+
 import express from "express";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
+
 const app = express();
+
+// enable CORS
+app.use(cors({
+  origin: "*", // allow all origins (change in production)
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
 const smtpTransport = nodemailer.createTransport({
@@ -40,13 +51,21 @@ Message: ${message}
       `
     });
 
-    res.json({ success: true, message: "Email sent successfully" });
     console.log("Email sent successfully");
+
+    res.json({
+      success: true,
+      message: "Email sent successfully"
+    });
 
   } catch (error) {
 
     console.error(error);
-    res.status(500).json({ success: false, message: "Email failed" });
+
+    res.status(500).json({
+      success: false,
+      message: "Email failed"
+    });
 
   }
 
